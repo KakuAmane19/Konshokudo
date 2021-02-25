@@ -1,0 +1,58 @@
+ion-title {
+  font-family: "MS Pゴシック", system-ui;
+  font-size: 40px;
+  text-align: center;
+  flex-direction: row;
+}
+
+ion-badge {
+  font-size: 30px;
+  margin-top: 10px;
+}
+
+ion-content {
+  text-align: center;
+}
+
+.revisit-list {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+}
+
+.question {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  margin-top: 10px;
+}
+
+.color {
+  width: 60px;
+  height: 60px;
+  margin: 10pt;
+  color: rgb(0, 0, 0);
+  border-radius: 50%;
+  background: skyblue;
+}
+
+.revisit {
+  width: 80px;
+  font-size: 20px;
+  color: rgb(136, 148, 201);
+  text-shadow: black 1px 1px 0px, black -1px 1px 0px, black -1px -1px 0px,
+    black 1px -1px 0px, black 1px 0px 0px, black 0px 1px 0px, black -1px 0px 0px,
+    black 0px -1px 0px;
+}
+
+.btn {
+  display: flex;
+  flex-direction: row;
+  margin: 5%;
+  bottom: 0;
+  width: 30%;
+}
+
+ion-toolbar {
+  --min-height: 50pt;
+}

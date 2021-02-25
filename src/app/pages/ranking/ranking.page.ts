@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./ranking.page.scss'],
 })
 export class RankingPage implements OnInit {
+  items: any[] = [];
 
   constructor() { }
 

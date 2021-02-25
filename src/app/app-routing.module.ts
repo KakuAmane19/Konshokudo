@@ -5,41 +5,58 @@ const routes: Routes = [
   {
     path: '',
     //loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
-    redirectTo: 'home', pathMatch: 'full'
+    redirectTo: 'home',
+    pathMatch: 'full',
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
+    loadChildren: () =>
+      import('./pages/home/home.module').then((m) => m.HomePageModule),
   },
   {
     path: 'game',
-    loadChildren: () => import('./pages/game/game.module').then( m => m.GamePageModule)
+    loadChildren: () =>
+      import('./pages/game/game.module').then((m) => m.GamePageModule),
   },
   {
     path: 'result',
-    loadChildren: () => import('./pages/result/result.module').then( m => m.ResultPageModule)
+    loadChildren: () =>
+      import('./pages/result/result.module').then((m) => m.ResultPageModule),
   },
   {
     path: 'review',
-    loadChildren: () => import('./pages/review/review.module').then( m => m.ReviewPageModule)
+    loadChildren: () =>
+      import('./pages/review/review.module').then((m) => m.ReviewPageModule),
   },
   {
     path: 'revisit-select',
-    loadChildren: () => import('./pages/revisit-select/revisit-select.module').then( m => m.RevisitSelectPageModule)
+    loadChildren: () =>
+      import('./pages/revisit-select/revisit-select.module').then(
+        (m) => m.RevisitSelectPageModule
+      ),
   },
   {
     path: 'revisit-game',
-    loadChildren: () => import('./pages/revisit-game/revisit-game.module').then( m => m.RevisitGamePageModule)
+    loadChildren: () =>
+      import('./pages/revisit-game/revisit-game.module').then(
+        (m) => m.RevisitGamePageModule
+      ),
   },
   {
     path: 'ranking',
-    loadChildren: () => import('./pages/ranking/ranking.module').then( m => m.RankingPageModule)
-  }
+    loadChildren: () =>
+      import('./pages/ranking/ranking.module').then((m) => m.RankingPageModule),
+  },
+  {
+    path: '**',
+    redirectTo: 'home',
+    pathMatch: 'full', // 追加
+  },
 ];
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
