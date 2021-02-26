@@ -1,0 +1,66 @@
+ion-title {
+  font-family: "MS Pゴシック", system-ui;
+  font-size: 40px;
+  text-align: center;
+  flex-direction: row;
+}
+ion-content {
+  text-align: center;
+}
+
+.game-contents {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  justify-content: space-between;
+}
+
+.no {
+  display: flex;
+  align-items: center;
+  font-size: 25px;
+  margin-left: 40px;
+}
+
+.quest-and-answer {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+p {
+  text-align: center;
+  font-size: 25px;
+  color: rgb(255, 255, 255);
+  text-shadow: black 1px 1px 0px, black -1px 1px 0px, black -1px -1px 0px,
+    black 1px -1px 0px, black 1px 0px 0px, black 0px 1px 0px, black -1px 0px 0px,
+    black 0px -1px 0px;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 15px;
+}
+
+.col {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 25px;
+}
+
+.color {
+  width: 60px;
+  height: 60px;
+  color: rgb(0, 0, 0);
+  border-radius: 50%;
+  background: skyblue;
+}
