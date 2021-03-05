@@ -20,8 +20,18 @@
     </div>
     <p class="text">2色を混ぜて目標の色を作ろう</p>
     <div class="container">
-      <div class="col" *ngFor="let i of 5 | times">
-        <div class="color" *ngFor="let r of 5| times; let i = index"></div>
+      <div
+        class="col"
+        *ngFor="let c of 5 | times; let y = index;"
+        (click)="selectColorY(y)"
+        [class.selected]="y === currentIndex[1]"
+      >
+        <div
+          class="color"
+          *ngFor="let r of 5| times; let x = index;"
+          (click)="selectColorX(x)"
+          [class.selected]="x === currentIndex[0]"
+        ></div>
       </div>
     </div>
   </div>
