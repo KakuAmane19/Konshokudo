@@ -24,13 +24,12 @@
         class="col"
         *ngFor="let c of 5 | times; let y = index;"
         (click)="selectColorY(y)"
-        [class.selected]="y === currentIndex[1]"
       >
         <div
           class="color"
           *ngFor="let r of 5| times; let x = index;"
           (click)="selectColorX(x)"
-          [class.selected]="x === currentIndex[0]"
+          [class.selected]="x === tempX && y === tempY && options[tempY][tempX]"
         ></div>
       </div>
     </div>
