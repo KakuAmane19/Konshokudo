@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer } from 'rxjs';
 
+import { AllColorsService } from '../../services/all-colors.service';
 const time$ = timer(3000);
 
 @Component({
@@ -36,9 +37,14 @@ export class GamePage implements OnInit {
   //その他デバッグ用変数
   public selectedColor = false;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private allColorsService: AllColorsService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.getOptions();
+  }
 
   ngDoCheck() {
     //time$.subscribe(() => this.router.navigateByUrl('/result'));
@@ -63,6 +69,9 @@ export class GamePage implements OnInit {
    * 全色データ（サービス）から問題を受け取り、ランダムに必要数獲得・表示
    * @param i
    */
+  getOptions() {
+    console.log(this.allColorsService.provideColorData());
+  }
 
   /**
    * 出題色の生成
@@ -70,8 +79,8 @@ export class GamePage implements OnInit {
    */
 
   /**
-   * 選択肢のうち、選ばれたオブジェクトのY座標を保管し、判定するメソッド
-   * QUESTION:値の確保と判定をこのコンポーネントのメソッド上で分けたほうがいい気がする……
+   * 選択肢のうち、選ばれたオブジェクトのY座標を保管するメソッド
+   * 中で正誤判定表示メソッドを参照している
    * @param i 選択肢Y座標
    * @return nothing
    */
@@ -93,7 +102,7 @@ export class GamePage implements OnInit {
   }
 
   /*******************************
-   * 選択された色を正誤判定サービスに渡す・及び正誤判定を表示するメソッド
+   * 選択された色を検知し、正誤判定サービスに渡す、及び正誤判定を表示するメソッド
    */
   printJudge(): void {
     if (this.options[this.tempY][this.tempX]) {
