@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="quest-and-answer">
-      <div class="quest color"></div>
+      <div class="quest color" [style.background-color]="question"></div>
       <div class="answer color"><div class="sf">正解！</div></div>
     </div>
     <p class="text">2色を混ぜて目標の色を作ろう</p>
@@ -29,7 +29,8 @@
           class="color"
           *ngFor="let r of 5| times; let x = index;"
           (click)="selectColorX(x)"
-          [class.selected]="x === tempX && y === tempY && options[tempY][tempX]"
+          [class.selected]="x === tempX && y === tempY && selectedOptions[tempY][tempX]"
+          [style.background-color]="visibleOptions[y*5+x]"
         ></div>
       </div>
     </div>
