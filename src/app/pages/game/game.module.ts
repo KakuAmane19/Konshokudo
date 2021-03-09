@@ -10,10 +10,11 @@ import { GamePage } from './game.page';
 import { TimesPipe } from '../../pipes/times.pipe';
 
 import { AllColorsService } from '../../services/all-colors.service';
+import { JudgeService } from '../../services/judge.service';
 
 @NgModule({
   imports: [CommonModule, FormsModule, IonicModule, GamePageRoutingModule],
   declarations: [GamePage, TimesPipe],
-  providers: [AllColorsService],
+  providers: [AllColorsService, JudgeService],
 })
 export class GamePageModule {}

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { timer, Observable } from 'rxjs';
 
 import { AllColorsService } from '../../services/all-colors.service';
+import { JudgeService } from '../../services/judge.service';
 const time$ = timer(3000);
 
 @Component({
@@ -30,12 +31,14 @@ export class GamePage implements OnInit {
   public question = '';
 
   //回答カラーオブジェクト
+  public answer = '';
 
   //タイマー
 
   //今何問目？
 
   //正解不正解
+  public correctOrIncorrect = '';
 
   //その他デバッグ用変数
   public selectedColor = false;
@@ -43,7 +46,8 @@ export class GamePage implements OnInit {
 
   constructor(
     private router: Router,
-    private allColorsService: AllColorsService
+    private allColorsService: AllColorsService,
+    private judgeService: JudgeService
   ) {}
 
   ngOnInit() {
@@ -74,7 +78,7 @@ export class GamePage implements OnInit {
    * 全色データ（サービス）から問題を受け取り表示
    * @param nothing
    */
-  getOptions(): Promise<void> {
+  getOptions() {
     this.visibleOptions = this.allColorsService.provideOptions();
     return;
   }
@@ -150,26 +154,66 @@ export class GamePage implements OnInit {
       this.selectedOptions[this.tempY][this.tempX] = false;
       this.selectees[0][0] = -1;
       this.selectees[0][1] = -1;
-    } else if (
-      -1 < this.selectees[0][0] &&
-      !this.selectedOptions[this.tempY][this.tempX]
-    ) {
+      console.log(this.selectees, this.answer);
+    } else if (-1 < this.selectees[0][0]) {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[1][0] = this.tempX;
       this.selectees[1][1] = this.tempY;
 
-      //答え合わせメソッド=>サービスに移乗
+      console.log(this.selectees, this.answer);
 
-      //答え合わせメソッドの返り値から、正誤判定表示
+      //答え合わせメソッド=>サービスに移乗,メソッドの返り値から、正誤判定表示
+      //hsl値の切り出し
+      let source1 = this.visibleOptions[
+        this.selectees[0][1] * 5 + this.selectees[0][0]
+      ];
+      let source2 = this.visibleOptions[
+        this.selectees[1][1] * 5 + this.selectees[1][0]
+      ];
 
+      //各値平均
+      let hsl1 = source1.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
+      let hsl2 = source2.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
+
+      let answerHSL = hsl1.map((v, i) => (parseInt(v) + parseInt(hsl2[i])) / 2);
+
+      //セット
+      this.answer =
+        'hsl(' + answerHSL[0] + ',' + answerHSL[1] + '%,' + answerHSL[2] + '%)';
+
+      //判定
+      this.correctOrIncorrect = this.judgeService.judge(
+        this.question,
+        this.answer
+      )
+        ? '正解！'
+        : '不正解……';
+
+      //initialize
       for (let c = 0; c < this.selectedOptions.length; c++)
         this.selectedOptions[c].fill(false);
       for (let c = 0; c < this.selectees.length; c++)
         this.selectees[c].fill(-1);
+      if (this.correctOrIncorrect === '正解！') {
+        this.getOptions();
+        this.genQuestion();
+      }
+      this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
     } else {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[0][0] = this.tempX;
       this.selectees[0][1] = this.tempY;
+
+      //hsl値の切り出し
+      let source1 = this.visibleOptions[
+        this.selectees[0][1] * 5 + this.selectees[0][0]
+      ];
+
+      //各値平均
+      let hsl1 = source1.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
+
+      //セット
+      this.answer = 'hsl(' + hsl1[0] + ',' + hsl1[1] + '%,' + hsl1[2] + '%)';
     }
   }
 }
