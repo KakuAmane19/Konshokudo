@@ -17,7 +17,14 @@
     <div class="quest-and-answer">
       <div class="quest color" [style.background-color]="question"></div>
       <div class="answer color" [style.background-color]="answer">
-        <div class="sf" [style.color]="sf_color">{{correctOrIncorrect}}</div>
+        <div
+          class="sf"
+          [style.color]="sf_color"
+          [@fadeout]="correctOrIncorrect == ''?'visible':'invisible'"
+          (@fadeout.done)="onAnimationEnd($event)"
+        >
+          {{correctOrIncorrect}}
+        </div>
       </div>
     </div>
     <p class="text">2色を混ぜて目標の色を作ろう</p>

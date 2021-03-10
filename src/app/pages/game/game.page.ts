@@ -2,7 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer, Observable } from 'rxjs';
 const time$ = timer(3000);
-import { Animation, AnimationController } from '@ionic/angular';
+import {
+  trigger,
+  style,
+  animate,
+  transition,
+  query,
+  sequence,
+  state,
+  keyframes,
+} from '@angular/animations';
 
 import { AllColorsService } from '../../services/all-colors.service';
 import { JudgeService } from '../../services/judge.service';
@@ -12,6 +21,22 @@ import { RecordService } from '../../services/record.service';
   selector: 'app-game',
   templateUrl: './game.page.html',
   styleUrls: ['./game.page.scss'],
+  animations: [
+    trigger('fadeout', [
+      state('visible', style({})),
+      state('invisible', style({})),
+      transition('visible => invisible', [
+        animate(
+          '1s',
+          keyframes([
+            style({ opacity: 1, offset: 0.0 }),
+            style({ opacity: 1, offset: 0.5 }),
+            style({ opacity: 0, offset: 1.0 }),
+          ])
+        ),
+      ]),
+    ]),
+  ],
 })
 export class GamePage implements OnInit {
   //選択肢カラーオブジェクト5*5
@@ -46,20 +71,15 @@ export class GamePage implements OnInit {
   //正解不正解
   public correctOrIncorrect = '';
   public sf_color = 'red';
-  animation: Animation = this.animationCtrl
-    .create()
-    .addElement(document.querySelector('.sf'))
-    .duration(2000)
-    .fill('forwards')
-    .fromTo('opacity', '1', '0')
-    .fromTo('transform', 'translateY(20px)', 'translateY(0)');
+  onAnimationEnd(e) {
+    this.correctOrIncorrect = '';
+  }
 
   constructor(
     private router: Router,
     private allColorsService: AllColorsService,
     private judgeService: JudgeService,
-    private recordService: RecordService,
-    private animationCtrl: AnimationController
+    private recordService: RecordService //private animationCtrl: AnimationController
   ) {}
 
   ngOnInit() {
@@ -120,7 +140,17 @@ export class GamePage implements OnInit {
   gotoNext() {
     this.recordService.recordRapTime(this.timer);
     this.qno = (parseInt(this.qno) + 1).toString();
-    if (this.qno === '11') this.router.navigateByUrl('/result');
+    for (let c = 0; c < this.selectedOptions.length; c++)
+      this.selectedOptions[c].fill(false);
+    for (let c = 0; c < this.selectees.length; c++) this.selectees[c].fill(-1);
+    if (this.qno === '11') {
+      this.qno = '1';
+      this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
+      this.correctOrIncorrect = '';
+      clearInterval(this.timerRef);
+      this.clearTimer();
+      this.router.navigateByUrl('/result');
+    }
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
   }
 
@@ -250,29 +280,20 @@ export class GamePage implements OnInit {
       //判定
       let judge = this.judgeService.judge(this.question, this.answer);
 
-      //initialize
-      for (let c = 0; c < this.selectedOptions.length; c++)
-        this.selectedOptions[c].fill(false);
-      for (let c = 0; c < this.selectees.length; c++)
-        this.selectees[c].fill(-1);
       if (judge === true) {
         this.sf_color = 'red';
         this.correctOrIncorrect = '正解！';
-        this.animation.play().then(() => {
-          this.animation.stop();
-        });
+        //this.animation.play();
+        this.gotoNext();
         this.getOptions();
         this.genQuestion();
-        this.gotoNext();
       } else {
         this.sf_color = 'blue';
         this.correctOrIncorrect = '不正解……';
-        this.animation.play().then(() => {
-          this.animation.stop();
-        });
+        //this.animation.play();
         this.recordService.recordIncorrectByOnce(parseInt(this.qno));
       }
-      this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
+      //this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
     } else {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[0][0] = this.tempX;
