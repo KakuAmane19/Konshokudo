@@ -8,7 +8,7 @@
   <p></p>
   <div class="game-contents" appSpy>
     <div class="status">
-      <div class="time">00:00:00</div>
+      <div class="time" *ngIf="counter">{{timer}}</div>
       <div class="no">
         <div class="now">{{qno}}</div>
         /10　問目
@@ -17,7 +17,7 @@
     <div class="quest-and-answer">
       <div class="quest color" [style.background-color]="question"></div>
       <div class="answer color" [style.background-color]="answer">
-        <div class="sf">{{correctOrIncorrect}}</div>
+        <div class="sf" [style.color]="sf_color">{{correctOrIncorrect}}</div>
       </div>
     </div>
     <p class="text">2色を混ぜて目標の色を作ろう</p>

@@ -12,8 +12,17 @@ import { TimesPipe } from '../../pipes/times.pipe';
 import { AllColorsService } from '../../services/all-colors.service';
 import { JudgeService } from '../../services/judge.service';
 
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+
 @NgModule({
-  imports: [CommonModule, FormsModule, IonicModule, GamePageRoutingModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    GamePageRoutingModule,
+    HttpClientModule,
+    HttpClientJsonpModule,
+  ],
   declarations: [GamePage, TimesPipe],
   providers: [AllColorsService, JudgeService],
 })

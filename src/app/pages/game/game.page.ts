@@ -1,12 +1,13 @@
-import { Component, OnInit, Directive } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer, Observable } from 'rxjs';
 const time$ = timer(3000);
+import { Animation, AnimationController } from '@ionic/angular';
 
 import { AllColorsService } from '../../services/all-colors.service';
 import { JudgeService } from '../../services/judge.service';
+import { RecordService } from '../../services/record.service';
 
-@Directive({ selector: '[appSpy]' })
 @Component({
   selector: 'app-game',
   templateUrl: './game.page.html',
@@ -33,6 +34,10 @@ export class GamePage implements OnInit {
   public answer = '';
 
   //タイマー
+  public timer = '00:00.01';
+  counter: number;
+  timerRef;
+  running: boolean = false;
 
   //今何問目？
   public qno = '1';
@@ -40,16 +45,27 @@ export class GamePage implements OnInit {
 
   //正解不正解
   public correctOrIncorrect = '';
+  public sf_color = 'red';
+  animation: Animation = this.animationCtrl
+    .create()
+    .addElement(document.querySelector('.sf'))
+    .duration(2000)
+    .fill('forwards')
+    .fromTo('opacity', '1', '0')
+    .fromTo('transform', 'translateY(20px)', 'translateY(0)');
 
   constructor(
     private router: Router,
     private allColorsService: AllColorsService,
-    private judgeService: JudgeService
+    private judgeService: JudgeService,
+    private recordService: RecordService,
+    private animationCtrl: AnimationController
   ) {}
 
   ngOnInit() {
     this.getOptions();
     this.genQuestion();
+    this.startTimer();
   }
 
   ionViewDidLeave() {
@@ -58,23 +74,51 @@ export class GamePage implements OnInit {
     this.qno = '1';
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
     this.correctOrIncorrect = '';
+    clearInterval(this.timerRef);
   }
 
   /**
-   * タイマーの表示
+   * タイマーの開始と描写
    * @param
    */
+  startTimer() {
+    this.running = !this.running;
+    if (this.running) {
+      const startTime = Date.now() - (this.counter || 0);
+      this.timerRef = setInterval(() => {
+        this.counter = (Date.now() - startTime) / 1000;
+        let min = Math.floor(this.counter / 60);
+        let sec = Math.floor(this.counter) % 60;
+        let msec = Math.floor((this.counter * 100) % 100);
+
+        this.timer =
+          min.toString().padStart(2, '0') +
+          ':' +
+          sec.toString().padStart(2, '0') +
+          '.' +
+          msec.toString().padStart(2, '0');
+      });
+    } else {
+      clearInterval(this.timerRef);
+    }
+  }
 
   /**
-   * ラップタイムの記録＝＞サービス
+   * タイマーのクリア
    * @param
    */
+  clearTimer() {
+    this.running = false;
+    this.counter = undefined;
+    clearInterval(this.timerRef);
+  }
 
   /**
    *今何問目？の更新とゲーム終了
    * @param
    */
   gotoNext() {
+    this.recordService.recordRapTime(this.timer);
     this.qno = (parseInt(this.qno) + 1).toString();
     if (this.qno === '11') this.router.navigateByUrl('/result');
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
@@ -116,23 +160,28 @@ export class GamePage implements OnInit {
     let hsl1 = source1.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
     let hsl2 = source2.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
 
-    let questionHSL = hsl1.map((v, i) => (parseInt(v) + parseInt(hsl2[i])) / 2);
+    let rgb1 = this.judgeService.HSVtoRGB(hsl1[0], hsl1[1], hsl1[2]);
+    let rgb2 = this.judgeService.HSVtoRGB(hsl2[0], hsl2[1], hsl2[2]);
+
+    let questionRGB = rgb1.map((v, i) => Math.round((v + rgb2[i]) / 2));
 
     this.question =
-      'hsl(' +
-      questionHSL[0] +
+      'rgb(' +
+      questionRGB[0] +
       ',' +
-      questionHSL[1] +
-      '%,' +
-      questionHSL[2] +
-      '%)';
+      questionRGB[1] +
+      ',' +
+      questionRGB[2] +
+      ')';
     console.log(
       pickedSource,
       source1,
       source2,
       hsl1,
       hsl2,
-      questionHSL,
+      rgb1,
+      rgb2,
+      questionRGB,
       this.question
     );
   }
@@ -189,29 +238,39 @@ export class GamePage implements OnInit {
       let hsl1 = source1.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
       let hsl2 = source2.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
 
-      let answerHSL = hsl1.map((v, i) => (parseInt(v) + parseInt(hsl2[i])) / 2);
+      let rgb1 = this.judgeService.HSVtoRGB(hsl1[0], hsl1[1], hsl1[2]);
+      let rgb2 = this.judgeService.HSVtoRGB(hsl2[0], hsl2[1], hsl2[2]);
+
+      let answerRGB = rgb1.map((v, i) => Math.round((v + rgb2[i]) / 2));
 
       //セット
       this.answer =
-        'hsl(' + answerHSL[0] + ',' + answerHSL[1] + '%,' + answerHSL[2] + '%)';
+        'rgb(' + answerRGB[0] + ',' + answerRGB[1] + ',' + answerRGB[2] + ')';
 
       //判定
-      this.correctOrIncorrect = this.judgeService.judge(
-        this.question,
-        this.answer
-      )
-        ? '正解！'
-        : '不正解……';
+      let judge = this.judgeService.judge(this.question, this.answer);
 
       //initialize
       for (let c = 0; c < this.selectedOptions.length; c++)
         this.selectedOptions[c].fill(false);
       for (let c = 0; c < this.selectees.length; c++)
         this.selectees[c].fill(-1);
-      if (this.correctOrIncorrect === '正解！') {
+      if (judge === true) {
+        this.sf_color = 'red';
+        this.correctOrIncorrect = '正解！';
+        this.animation.play().then(() => {
+          this.animation.stop();
+        });
         this.getOptions();
         this.genQuestion();
         this.gotoNext();
+      } else {
+        this.sf_color = 'blue';
+        this.correctOrIncorrect = '不正解……';
+        this.animation.play().then(() => {
+          this.animation.stop();
+        });
+        this.recordService.recordIncorrectByOnce(parseInt(this.qno));
       }
       this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
     } else {
