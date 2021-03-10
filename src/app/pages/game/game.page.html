@@ -6,11 +6,11 @@
 
 <ion-content>
   <p></p>
-  <div class="game-contents">
+  <div class="game-contents" appSpy>
     <div class="status">
       <div class="time">00:00:00</div>
       <div class="no">
-        <div class="now">1</div>
+        <div class="now">{{qno}}</div>
         /10　問目
       </div>
     </div>
@@ -24,7 +24,7 @@
     <div class="container">
       <div
         class="col"
-        *ngFor="let c of 5 | times; let y = index;"
+        *ngFor="let c of r | times; let y = index;"
         (click)="selectColorY(y)"
       >
         <div

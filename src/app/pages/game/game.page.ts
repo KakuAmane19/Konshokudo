@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer, Observable } from 'rxjs';
+const time$ = timer(3000);
 
 import { AllColorsService } from '../../services/all-colors.service';
 import { JudgeService } from '../../services/judge.service';
-const time$ = timer(3000);
 
+@Directive({ selector: '[appSpy]' })
 @Component({
   selector: 'app-game',
   templateUrl: './game.page.html',
   styleUrls: ['./game.page.scss'],
 })
 export class GamePage implements OnInit {
-  //色オブジェクト
-
   //選択肢カラーオブジェクト5*5
   public selectedOptions = Array(5)
     .fill(0)
@@ -36,13 +35,11 @@ export class GamePage implements OnInit {
   //タイマー
 
   //今何問目？
+  public qno = '1';
+  public r = Math.round(parseInt(this.qno) / 2 + 0.4);
 
   //正解不正解
   public correctOrIncorrect = '';
-
-  //その他デバッグ用変数
-  public selectedColor = false;
-  private allColors;
 
   constructor(
     private router: Router,
@@ -55,8 +52,12 @@ export class GamePage implements OnInit {
     this.genQuestion();
   }
 
-  ngDoCheck() {
-    //time$.subscribe(() => this.router.navigateByUrl('/result'));
+  ionViewDidLeave() {
+    this.getOptions();
+    this.genQuestion();
+    this.qno = '1';
+    this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
+    this.correctOrIncorrect = '';
   }
 
   /**
@@ -73,6 +74,11 @@ export class GamePage implements OnInit {
    *今何問目？の更新とゲーム終了
    * @param
    */
+  gotoNext() {
+    this.qno = (parseInt(this.qno) + 1).toString();
+    if (this.qno === '11') this.router.navigateByUrl('/result');
+    this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
+  }
 
   /**
    * 全色データ（サービス）から問題を受け取り表示
@@ -88,22 +94,30 @@ export class GamePage implements OnInit {
    * @param nothing
    */
   genQuestion() {
-    //25色からランダムに2色取り出し
+    //25色からランダムに2色取り出し odd:x even:y
     let pickedSource = [...Array(4)]
       .fill(4.9)
       .map((v) => Math.floor(Math.random() * v));
+    if (pickedSource[0] >= this.r || pickedSource[2] >= this.r) {
+      pickedSource[0] = Math.floor(Math.random() * (this.r - 0.1));
+      pickedSource[2] = Math.floor(Math.random() * (this.r - 0.1));
+    }
+    while (
+      pickedSource[1] === pickedSource[3] &&
+      pickedSource[0] === pickedSource[2]
+    ) {
+      pickedSource[2] = Math.floor(Math.random() * (this.r - 0.1));
+      pickedSource[3] = Math.floor(Math.random() * 4.9);
+    }
 
-    //hsl値の切り出し
     let source1 = this.visibleOptions[pickedSource[0] * 5 + pickedSource[1]];
     let source2 = this.visibleOptions[pickedSource[2] * 5 + pickedSource[3]];
 
-    //各値平均
     let hsl1 = source1.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
     let hsl2 = source2.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
 
     let questionHSL = hsl1.map((v, i) => (parseInt(v) + parseInt(hsl2[i])) / 2);
 
-    //セット
     this.question =
       'hsl(' +
       questionHSL[0] +
@@ -197,6 +211,7 @@ export class GamePage implements OnInit {
       if (this.correctOrIncorrect === '正解！') {
         this.getOptions();
         this.genQuestion();
+        this.gotoNext();
       }
       this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
     } else {
