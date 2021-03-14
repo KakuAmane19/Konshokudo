@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { timer, Observable } from 'rxjs';
-const time$ = timer(3000);
+
 import {
   trigger,
   style,
@@ -140,9 +140,6 @@ export class GamePage implements OnInit {
   gotoNext() {
     this.recordService.recordRapTime(this.timer);
     this.qno = (parseInt(this.qno) + 1).toString();
-    for (let c = 0; c < this.selectedOptions.length; c++)
-      this.selectedOptions[c].fill(false);
-    for (let c = 0; c < this.selectees.length; c++) this.selectees[c].fill(-1);
     if (this.qno === '11') {
       this.qno = '1';
       this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
@@ -247,13 +244,13 @@ export class GamePage implements OnInit {
       this.selectedOptions[this.tempY][this.tempX] = false;
       this.selectees[0][0] = -1;
       this.selectees[0][1] = -1;
-      console.log(this.selectees, this.answer);
+      console.log(this.selectees);
     } else if (-1 < this.selectees[0][0]) {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[1][0] = this.tempX;
       this.selectees[1][1] = this.tempY;
 
-      console.log(this.selectees, this.answer);
+      console.log(this.selectees);
 
       //答え合わせメソッド=>サービスに移乗,メソッドの返り値から、正誤判定表示
       //hsl値の切り出し
@@ -280,20 +277,24 @@ export class GamePage implements OnInit {
       //判定
       let judge = this.judgeService.judge(this.question, this.answer);
 
+      for (let c = 0; c < this.selectedOptions.length; c++)
+        this.selectedOptions[c].fill(false);
+      for (let c = 0; c < this.selectees.length; c++)
+        this.selectees[c].fill(-1);
+
       if (judge === true) {
         this.sf_color = 'red';
         this.correctOrIncorrect = '正解！';
-        //this.animation.play();
+        this.answer = '';
         this.gotoNext();
         this.getOptions();
         this.genQuestion();
       } else {
         this.sf_color = 'blue';
         this.correctOrIncorrect = '不正解……';
-        //this.animation.play();
         this.recordService.recordIncorrectByOnce(parseInt(this.qno));
+        this.answer = '';
       }
-      //this.answer = 'hsl(' + 0 + ',' + 0 + '%,' + 100 + '%)';
     } else {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[0][0] = this.tempX;

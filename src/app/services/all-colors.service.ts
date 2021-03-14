@@ -38,7 +38,7 @@ export class AllColorsService {
     return this.allColorsHSL();
   }
 
-  provideOptions() {
+  provideOptions(/*revisit?:boolean */) {
     let buffer = this.allColorsHSL();
 
     //フィッシャーとイェーツによるアルゴリズム
@@ -46,6 +46,8 @@ export class AllColorsService {
       let j = Math.floor(Math.random() * i);
       buffer[i] = [buffer[j], (buffer[j] = buffer[i])][0];
     }
+
+    //revisit問題であれば、先頭ｎ個以内にランダム交換
 
     return buffer.slice(0, 25);
   }

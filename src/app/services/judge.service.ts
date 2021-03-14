@@ -11,7 +11,15 @@ export class JudgeService {
    * @return true=正解 false=不正解:boolean
    */
   judge(q, a): boolean {
-    if (q && a && q.toString() === a.toString()) return true;
+    let margin = 60;
+    let qValue = q.split(/rgb\(|,|\)/g).slice(1, 4);
+    let aValue = a.split(/rgb\(|,|\)/g).slice(1, 4);
+
+    let diff = qValue.map((v, i) => Math.abs(v - aValue[i]));
+    let totalDiff = diff.reduce((s, e) => s + e, 0);
+    console.log(totalDiff);
+
+    if (totalDiff < margin) return true;
 
     return false;
   }

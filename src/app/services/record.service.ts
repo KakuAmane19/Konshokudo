@@ -25,7 +25,7 @@ export class RecordService {
   }
 
   /**
-   * ラップタイムの記録＝＞サービス
+   * ラップタイムの記録
    * @param n:number 問題番号
    * @return nothing
    */
@@ -33,4 +33,25 @@ export class RecordService {
     this.recordedCorrectByOnce[n - 1] = false;
     console.log(this.recordedCorrectByOnce, n);
   }
+
+  /**
+   * 問題記録
+   * @param n:number 問題番号
+   * @return nothing
+   */
+  /**
+   * 回答色記録
+   * @param n:number 問題番号
+   * @return nothing
+   */
+  /**
+   * サーバーに保存
+   * @param n:number 問題番号
+   * @return nothing
+   */
+  /**
+   * ランキング更新判定とサーバー保存
+   * @param n:number 問題番号
+   * @return nothing
+   */
 }

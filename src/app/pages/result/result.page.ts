@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./result.page.scss'],
 })
 export class ResultPage implements OnInit {
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
+    //今回のリザルト表示
+    //リザルト20位以内?アラートを表示（）
+    //アラートから名前を受け取り
+    //ランキング受け取り
+    //更新判定
+    //描画
   }
-
 }

@@ -6,10 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./review.page.scss'],
 })
 export class ReviewPage implements OnInit {
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
+    //今回のラップタイムと要復習、問題と回答を受け取る
+    //描画
   }
-
 }
