@@ -32,18 +32,33 @@ export class RecordService {
    * @return totalTimeString:String
    */
   provideTotalTime() {
-    return this.recordedTime.map((rapTime) => {
-      let timeSections = rapTime.split(/:|./g);
+    this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
+    console.log(this.recordedTime);
+    let totalTimeString = this.recordedTime.reduce((pre, rapTime) => {
+      let timeSections = rapTime.toString().split(/\:|\./g);
+      let preTimeTotal = pre.toString().split(/\:|\./g);
       let totalTimeSeconds =
-        (timeSections[0] * 60 + timeSections[1]) * 100 + timeSections[2];
-      let totalTimeString =
-        totalTimeSeconds / 60 +
+        (parseInt(timeSections[0]) + parseInt(preTimeTotal[0])) * 6000 +
+        (parseInt(timeSections[1]) + parseInt(preTimeTotal[1])) * 100 +
+        parseInt(timeSections[2]) +
+        parseInt(preTimeTotal[2]);
+
+      console.log(pre, rapTime, totalTimeSeconds, timeSections, preTimeTotal);
+
+      let min = Math.floor(totalTimeSeconds / 6000);
+      let sec = Math.floor((totalTimeSeconds % 6000) / 100);
+      let msec = Math.floor(totalTimeSeconds % 100);
+
+      return (
+        min.toString().padStart(2, '0') +
         ':' +
-        (totalTimeSeconds % 60) / 100 +
+        sec.toString().padStart(2, '0') +
         '.' +
-        (totalTimeSeconds % 100);
-      return totalTimeString;
-    });
+        msec.toString().padStart(2, '0')
+      );
+    }, '00:00.00');
+    console.log(totalTimeString);
+    return totalTimeString;
   }
 
   /**
