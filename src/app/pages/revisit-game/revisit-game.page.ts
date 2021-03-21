@@ -17,4 +17,9 @@ export class RevisitGamePage implements OnInit {
   ngDoCheck() {
     //time$.subscribe(() => this.router.navigateByUrl('/revisit-select'));
   }
+
+  //復習ゲーム
+  //しばらく回答を見せる時間を作る。
+  //一問正解したらセレクトに戻る
+  //復習問題から消す
 }

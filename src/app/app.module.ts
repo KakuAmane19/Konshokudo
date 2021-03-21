@@ -4,10 +4,17 @@ import { RouteReuseStrategy } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // 追加
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-//import { TimesPipe } from './pipes/times.pipe';
+
+import { AllColorsService } from './services/all-colors.service';
+import { JudgeService } from './services/judge.service';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './state';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent],
@@ -17,8 +24,15 @@ import { AppComponent } from './app.component';
     IonicModule.forRoot(),
     AppRoutingModule,
     BrowserAnimationsModule,
+    StoreModule.forRoot(reducers, { metaReducers }),
+    !environment.production ? StoreDevtoolsModule.instrument() : [],
+    IonicStorageModule.forRoot({ name: 'rankings' }),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    AllColorsService,
+    JudgeService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

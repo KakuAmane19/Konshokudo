@@ -7,12 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { GamePageRoutingModule } from './game-routing.module';
 
 import { GamePage } from './game.page';
-import { TimesPipe } from '../../pipes/times.pipe';
 
-import { AllColorsService } from '../../services/all-colors.service';
-import { JudgeService } from '../../services/judge.service';
-
-import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -20,10 +16,8 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
     FormsModule,
     IonicModule,
     GamePageRoutingModule,
-    HttpClientModule,
-    HttpClientJsonpModule,
+    SharedModule,
   ],
-  declarations: [GamePage, TimesPipe],
-  providers: [AllColorsService, JudgeService],
+  declarations: [GamePage],
 })
 export class GamePageModule {}

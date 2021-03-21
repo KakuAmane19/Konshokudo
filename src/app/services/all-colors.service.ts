@@ -38,7 +38,7 @@ export class AllColorsService {
     return this.allColorsHSL();
   }
 
-  provideOptions(/*revisit?:boolean */) {
+  provideOptions() {
     let buffer = this.allColorsHSL();
 
     //フィッシャーとイェーツによるアルゴリズム

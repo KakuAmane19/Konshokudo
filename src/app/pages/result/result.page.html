@@ -9,32 +9,7 @@
 
 <ion-content>
   <div class="ranking">
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefuddddddddddddddddgapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
+    <div class="user" *ngFor="let rankinUsers of 20 | times; let y = index;">
       <div class="user-rank">1</div>
       <div class="user-name">hogefugapiyo</div>
       <div class="user-time">00:00:00</div>

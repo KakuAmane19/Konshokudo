@@ -94,6 +94,7 @@ export class GamePage implements OnInit {
     this.qno = '1';
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
     this.correctOrIncorrect = '';
+    this.clearTimer();
     clearInterval(this.timerRef);
   }
 
@@ -144,8 +145,7 @@ export class GamePage implements OnInit {
       this.qno = '1';
       this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
       this.correctOrIncorrect = '';
-      clearInterval(this.timerRef);
-      this.clearTimer();
+      //this.clearTimer();
       this.router.navigateByUrl('/result');
     }
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
