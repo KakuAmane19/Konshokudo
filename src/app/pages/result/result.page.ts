@@ -9,7 +9,7 @@ import { RecordService } from '../../services/record.service';
 })
 export class ResultPage implements OnInit {
   //今回のタイム
-  public record;
+  public record: string;
   //ランキング
   public rankings;
 
@@ -33,6 +33,9 @@ export class ResultPage implements OnInit {
     this.printRanking();
   }
 
+  ionViewDidLeave() {
+    this.recordService.reset();
+  }
   printRanking() {}
 
   getName() {}

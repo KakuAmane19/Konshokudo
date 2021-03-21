@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RecordService } from '../../services/record.service';
 
 @Component({
   selector: 'app-home',
@@ -6,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-  constructor() {}
+  constructor(private recordService: RecordService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.recordService.reset();
+  }
 
   //revisitゲームの数を取得しバッヂに描画
 }

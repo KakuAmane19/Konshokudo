@@ -59,7 +59,7 @@ export class GamePage implements OnInit {
   public answer = '';
 
   //タイマー
-  public timer = '00:00.01';
+  public timer = '00:00.00';
   counter: number;
   timerRef;
   running: boolean = false;

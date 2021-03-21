@@ -31,34 +31,21 @@ export class RecordService {
    * @param nothing
    * @return totalTimeString:String
    */
-  provideTotalTime() {
-    this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
+  provideTotalTime(): string {
+    //this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
     console.log(this.recordedTime);
-    let totalTimeString = this.recordedTime.reduce((pre, rapTime) => {
-      let timeSections = rapTime.toString().split(/\:|\./g);
-      let preTimeTotal = pre.toString().split(/\:|\./g);
-      let totalTimeSeconds =
-        (parseInt(timeSections[0]) + parseInt(preTimeTotal[0])) * 6000 +
-        (parseInt(timeSections[1]) + parseInt(preTimeTotal[1])) * 100 +
-        parseInt(timeSections[2]) +
-        parseInt(preTimeTotal[2]);
+    return this.recordedTime[this.recordedTime.length - 1];
+  }
 
-      console.log(pre, rapTime, totalTimeSeconds, timeSections, preTimeTotal);
-
-      let min = Math.floor(totalTimeSeconds / 6000);
-      let sec = Math.floor((totalTimeSeconds % 6000) / 100);
-      let msec = Math.floor(totalTimeSeconds % 100);
-
-      return (
-        min.toString().padStart(2, '0') +
-        ':' +
-        sec.toString().padStart(2, '0') +
-        '.' +
-        msec.toString().padStart(2, '0')
-      );
-    }, '00:00.00');
-    console.log(totalTimeString);
-    return totalTimeString;
+  /**
+   * Service内変数のリセット
+   * @param nothing
+   * @return totalTimeString:String
+   */
+  reset() {
+    this.recordedTime = [...Array(10)].fill('');
+    this.recordedCorrectByOnce = [...Array(10)].fill(true);
+    console.log(this.recordedTime);
   }
 
   /**
@@ -86,7 +73,7 @@ export class RecordService {
   recordAnswer(color1: string, color2: string) {}
 
   /**
-   * サーバーに保存
+   * サーバーに復習問題を保存
    * @param n:number 問題番号
    * @return nothing
    */
@@ -97,7 +84,11 @@ export class RecordService {
    * @return nothing
    */
   saveRanking() {
-    this.storage.set(this.keys.RANKING, { '@*+++': '02:10.38' });
+    this.storage.set(this.keys.RANKING, {
+      rank: '1',
+      name: 'hoge',
+      time: '00:00.00',
+    });
   }
 
   /**
