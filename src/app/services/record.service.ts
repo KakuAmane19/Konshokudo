@@ -84,11 +84,18 @@ export class RecordService {
    * @return nothing
    */
   saveRanking() {
-    this.storage.set(this.keys.RANKING, {
-      rank: '1',
-      name: 'hoge',
-      time: '00:00.00',
-    });
+    this.storage.set(this.keys.RANKING, [
+      {
+        rank: '1',
+        name: 'hoge',
+        time: '00:00.00',
+      },
+      {
+        rank: '2',
+        name: 'fuga',
+        time: '00:30.00',
+      },
+    ]);
   }
 
   /**
