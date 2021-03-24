@@ -23,16 +23,11 @@ export class ResultPage implements OnInit {
     //今回のリザルト表示
     this.record = this.recordService.provideTotalTime();
     //リザルト20位以内?アラートを表示（）
-    this.presentAlertPrompt();
-    //if(){
-    //アラート表示
-    //アラートから名前を受け取り
-    //}
-
-    //ランキング受け取り
-    await this.recordService.saveRanking();
-    this.rankings = await this.recordService.provideRanking();
-    console.log(this.rankings);
+    if (this.recordService.rankin()) {
+      await this.presentAlertPrompt();
+    } else {
+      this.rankings = await this.recordService.provideRanking();
+    }
   }
 
   ionViewDidLeave() {
@@ -47,14 +42,18 @@ export class ResultPage implements OnInit {
         {
           name: 'name',
           type: 'text',
+          value: '',
           placeholder: 'Pleas enter your name.',
         },
       ],
       buttons: [
         {
           text: 'Ok',
-          handler: (text: string) => {
+          handler: async (text: string) => {
             console.log(text);
+            await this.recordService.saveRanking(text);
+            this.rankings = await this.recordService.provideRanking();
+            text = '';
           },
         },
       ],
