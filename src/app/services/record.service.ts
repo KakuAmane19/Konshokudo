@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 })
 export class RecordService {
   //private recordedTime = [...Array(10)].fill('');
-  private recordedTime = [...Array(10)].fill('00:00.00'); //　デバッグ用
+  private recordedTime = [...Array(10)].fill('00:40.00'); //　デバッグ用
   private recordedCorrectByOnce = [...Array(10)].fill(true);
   private keys = {
     RANKING: 'RANKING',
@@ -16,7 +16,7 @@ export class RecordService {
     rank: '',
     name: '',
     time: '',
-    timeInCSec: -1,
+    timeInCSec: Infinity,
   });
 
   constructor(private storage: Storage) {}
@@ -40,7 +40,7 @@ export class RecordService {
    * @return totalTimeString:String
    */
   provideTotalTime(): string {
-    this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
+    //this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
     return this.recordedTime[this.recordedTime.length - 1];
   }
 
@@ -90,10 +90,11 @@ export class RecordService {
    * @param nothing
    * @return boolean
    */
-  rankin(): boolean {
-    //ranking[i].timeInCSec >= 今回のタイムのtimeInCSec
-    return true;
-    //return false;
+  async rankin(): Promise<boolean> {
+    this.rankings = await this.provideRanking();
+    if (this.rankings[this.rankings.length - 1] >= this.recordedTime[9])
+      return true;
+    return false;
   }
 
   /**
@@ -101,38 +102,33 @@ export class RecordService {
    * @param n:number 問題番号
    * @return nothing
    */
-  saveRanking(text) {
-    let updated = false;
-    console.log(this.rankings);
-    for (let i = 0; i < this.rankings.length; i++) {
-      if (
-        !updated &&
-        this.convertTimeStr2Int(this.rankings[i].time) >=
-          this.convertTimeStr2Int(this.recordedTime[9])
-      ) {
-        this.rankings.splice(i, 0, {
-          rank: (i + 1).toString(),
-          name: text.name,
-          time: this.recordedTime[9],
-          timeInCSec: this.convertTimeStr2Int(this.recordedTime[9]),
-        });
-        console.log(this.rankings);
-        updated = true;
-      } else if (!updated && this.rankings[i].timeInCSec === -1) {
-        this.rankings[i] = {
-          rank: (i + 1).toString(),
-          name: text.name,
-          time: this.recordedTime[9],
-          timeInCSec: this.convertTimeStr2Int(this.recordedTime[9]),
-        };
-        console.log(this.rankings, this.recordedTime[9]);
-        updated = true;
-      } else {
-        continue;
+  async saveRanking(text) {
+    this.rankings = await this.provideRanking();
+
+    this.rankings.push({
+      rank: '',
+      name: text.name,
+      time: this.recordedTime[9],
+      timeInCSec: this.convertTimeStr2Int(this.recordedTime[9]),
+    });
+
+    this.rankings.sort((a, b) => {
+      let comparison = 0;
+
+      if (a.timeInCSec > b.timeInCSec) {
+        comparison = 1;
+      } else if (b.timeInCSec >= a.timeInCSec) {
+        comparison = -1;
       }
-    }
-    //console.log(this.rankings);
-    this.storage.set(this.keys.RANKING, this.rankings);
+      return comparison;
+    });
+
+    this.rankings
+      .filter((v) => v.timeInCSec < Infinity)
+      .map((v, i) => (v.rank = i + 1));
+    console.log(this.rankings);
+
+    await this.storage.set(this.keys.RANKING, this.rankings.slice(0, 20));
   }
 
   /**
@@ -151,7 +147,7 @@ export class RecordService {
    */
   private convertTimeStr2Int(time: string) {
     //console.log(time);
-    if (time === '') return -1;
+    if (time === '') return Infinity;
     let timeSections1 = time.split(/\:|\./g);
     let timeArray = timeSections1.map((v) => parseInt(v, 10));
     let timeInCSec = timeArray[0] * 6000 + timeArray[1] * 100 + timeArray[2];

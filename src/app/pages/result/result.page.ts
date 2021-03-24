@@ -50,7 +50,6 @@ export class ResultPage implements OnInit {
         {
           text: 'Ok',
           handler: async (text: string) => {
-            console.log(text);
             await this.recordService.saveRanking(text);
             this.rankings = await this.recordService.provideRanking();
             text = '';
