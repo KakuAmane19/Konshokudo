@@ -7,7 +7,7 @@ import { Storage } from '@ionic/storage';
 })
 export class RecordService {
   //private recordedTime = [...Array(10)].fill('');
-  private recordedTime = [...Array(10)].fill('00:40.00'); //　デバッグ用
+  private recordedTime = [...Array(10)].fill('01:40.00'); //　デバッグ用
   private recordedCorrectByOnce = [...Array(10)].fill(true);
   private keys = {
     RANKING: 'RANKING',
@@ -92,7 +92,10 @@ export class RecordService {
    */
   async rankin(): Promise<boolean> {
     this.rankings = await this.provideRanking();
-    if (this.rankings[this.rankings.length - 1] >= this.recordedTime[9])
+    if (
+      this.rankings[this.rankings.length - 1].timeInCSec >=
+      this.convertTimeStr2Int(this.recordedTime[9])
+    )
       return true;
     return false;
   }

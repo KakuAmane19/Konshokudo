@@ -6,35 +6,10 @@
 
 <ion-content>
   <div class="ranking">
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefuddddddddddddddddgapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
-    </div>
-    <div class="user">
-      <div class="user-rank">1</div>
-      <div class="user-name">hogefugapiyo</div>
-      <div class="user-time">00:00:00</div>
+    <div class="user" *ngFor="let rankinUser of rankings;">
+      <div class="user-rank">{{rankinUser.rank}}</div>
+      <div class="user-name">{{rankinUser.name}}</div>
+      <div class="user-time">{{rankinUser.time}}</div>
     </div>
   </div>
 </ion-content>

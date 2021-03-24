@@ -23,7 +23,7 @@ export class ResultPage implements OnInit {
     //今回のリザルト表示
     this.record = this.recordService.provideTotalTime();
     //リザルト20位以内?アラートを表示（）
-    if (this.recordService.rankin()) {
+    if (await this.recordService.rankin()) {
       await this.presentAlertPrompt();
     } else {
       this.rankings = await this.recordService.provideRanking();

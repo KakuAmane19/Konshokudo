@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { RecordService } from '../../services/record.service';
+
 @Component({
   selector: 'app-ranking',
   templateUrl: './ranking.page.html',
@@ -8,9 +10,12 @@ import { Component, OnInit } from '@angular/core';
 export class RankingPage implements OnInit {
   items: any[] = [];
 
-  constructor() { }
+  //ランキング
+  public rankings;
 
-  ngOnInit() {
+  constructor(private recordService: RecordService) {}
+
+  async ngOnInit() {
+    this.rankings = await this.recordService.provideRanking();
   }
-
 }
