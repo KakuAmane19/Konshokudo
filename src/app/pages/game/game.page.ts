@@ -200,16 +200,12 @@ export class GamePage implements OnInit {
       ',' +
       questionRGB[2] +
       ')';
-    console.log(
-      pickedSource,
-      source1,
-      source2,
-      hsl1,
-      hsl2,
-      rgb1,
-      rgb2,
-      questionRGB,
-      this.question
+    console.log(pickedSource);
+    this.recordService.recordQuestion(
+      this.question,
+      parseInt(this.qno),
+      'rgb(' + rgb1[0] + ',' + rgb1[1] + ',' + rgb1[2] + ')',
+      'rgb(' + rgb2[0] + ',' + rgb2[1] + ',' + rgb2[2] + ')'
     );
   }
 

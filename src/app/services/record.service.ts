@@ -6,18 +6,46 @@ import { Storage } from '@ionic/storage';
   providedIn: 'root',
 })
 export class RecordService {
+  //ラップタイム
   //private recordedTime = [...Array(10)].fill('');
   private recordedTime = [...Array(10)].fill('01:40.00'); //　デバッグ用
+
+  //一回目正解
   private recordedCorrectByOnce = [...Array(10)].fill(true);
+
+  //キーオブジェクト
   private keys = {
     RANKING: 'RANKING',
   };
+
+  //ランキング
   private rankings = [...Array(20)].fill({
     rank: '',
     name: '',
     time: '',
     timeInCSec: Infinity,
   });
+
+  //振り返り用各問
+  private reviews: Array<Object> = new Array<Object>();
+  /* {
+    question: '',
+    answer1: '',
+    answer2: '',
+    recordIncorrectByOnce: true,
+    rapTime: '',
+  });*/
+
+  //復習問題
+  private revisitGames: Array<Object>;
+  /**[...Array(10)].fill({
+    question: '',
+    answer1: '',
+    answer2: '',
+    recordIncorrectByOnce: false,
+    challengeTimes: '-1',
+  });
+   */
 
   constructor(private storage: Storage) {}
 
@@ -66,18 +94,28 @@ export class RecordService {
   }
 
   /**
-   * 問題記録
+   * 問題と回答色記録
+   * @param color: string 回答色
    * @param n:number 問題番号
+   * @param color1: string 回答色1
+   * @param color2: string 回答色2
    * @return nothing
    */
-  recordQuestion(color: string) {}
-
-  /**
-   * 回答色記録
-   * @param n:number 問題番号
-   * @return nothing
-   */
-  recordAnswer(color1: string, color2: string) {}
+  recordQuestion(
+    questionColor: string,
+    n: number,
+    answerColor1: string,
+    answerColor2: string
+  ) {
+    let gameReviews = {
+      qno: n,
+      question: questionColor,
+      answer1: answerColor1,
+      answer2: answerColor2,
+    };
+    this.reviews.push(gameReviews);
+    console.log(gameReviews, JSON.stringify(this.reviews), this.reviews);
+  }
 
   /**
    * サーバーに復習問題を保存
