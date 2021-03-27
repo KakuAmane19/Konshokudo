@@ -6,23 +6,28 @@
 
 <ion-content>
   <div class="revisit-list">
-    <div class="question" (click)="gotoRevisitGame()">
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="revisit"><ion-badge color="secondary">3</ion-badge></div>
-    </div>
-    <div class="question">
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="revisit"><ion-badge color="secondary">3</ion-badge></div>
-    </div>
-    <div class="question">
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="revisit"><ion-badge color="secondary">3</ion-badge></div>
+    <div
+      class="question"
+      (click)="gotoRevisitGame(revisitGame)"
+      *ngFor="let revisitGame of revisitGames;"
+    >
+      <div
+        class="color"
+        [style.background-color]="revisitGame['question']"
+      ></div>
+      <div
+        class="color"
+        [style.background-color]="revisitGame['answer1']"
+      ></div>
+      <div
+        class="color"
+        [style.background-color]="revisitGame['answer2']"
+      ></div>
+      <div class="revisit">
+        <ion-badge color="secondary"
+          >{{revisitGame['challengeTimes']}}</ion-badge
+        >
+      </div>
     </div>
   </div>
 </ion-content>

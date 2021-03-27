@@ -60,7 +60,17 @@ p {
 .color {
   width: 60px;
   height: 60px;
-  color: rgb(0, 0, 0);
+  //color: rgb(0, 0, 0);
   border-radius: 50%;
-  background: skyblue;
+  //background: skyblue;
+}
+
+.selected {
+  filter: drop-shadow(0 0 0.75rem yellow);
+}
+
+.sf {
+  font-size: 20px;
+  font-weight: bold;
+  opacity: 0;
 }

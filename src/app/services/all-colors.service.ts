@@ -32,13 +32,16 @@ export class AllColorsService {
 
     return linear3.concat(this.achromaticHSL);
   };
+
+  private revisitGameData: Object;
+
   constructor() {}
 
   provideColorData() {
     return this.allColorsHSL();
   }
 
-  provideOptions() {
+  provideOptions(revisit?: string): string[] {
     let buffer = this.allColorsHSL();
 
     //フィッシャーとイェーツによるアルゴリズム
@@ -48,7 +51,30 @@ export class AllColorsService {
     }
 
     //revisit問題であれば、先頭ｎ個以内にランダム交換
+    if (revisit !== undefined) {
+      //答え1のインデックスを確保
+      //答え2のインデックスを確保
+      //もし答え1のインデックスまたは答え2のインデックスが先頭25以上のとき
+      //答え1と先頭25個のうち1つ交換
+      //答え2と残りの先頭24個のうち一つを交換
+    }
 
     return buffer.slice(0, 25);
+  }
+
+  /**
+   * 選択した復習問題データの一時保管
+   * @param revisitGame
+   */
+  reserveTheGameData(revisitGame: Object) {
+    this.revisitGameData = revisitGame;
+  }
+
+  /**
+   * 選択した復習問題データの提供
+   * @param revisitGame
+   */
+  provideTheGameData(): Object {
+    return this.revisitGameData;
   }
 }

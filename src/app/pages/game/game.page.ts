@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { timer, Observable } from 'rxjs';
+//import { timer, Observable } from 'rxjs';
 
 import {
   trigger,

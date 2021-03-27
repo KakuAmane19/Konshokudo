@@ -14,45 +14,32 @@
       <div class="no"><p></p></div>
     </div>
     <div class="quest-and-answer">
-      <div class="quest color"></div>
-      <div class="answer color"><div class="sf">正解！</div></div>
+      <div class="quest color" [style.background-color]="question"></div>
+      <div class="answer color" [style.background-color]="answer">
+        <div
+          class="sf"
+          [style.color]="sf_color"
+          [@fadeout]="correctOrIncorrect == ''?'visible':'invisible'"
+          (@fadeout.done)="onAnimationEnd($event)"
+        >
+          {{correctOrIncorrect}}
+        </div>
+      </div>
     </div>
     <p class="text">2色を混ぜて目標の色を作ろう</p>
     <div class="container">
-      <div class="col">
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-      </div>
-      <div class="col">
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-      </div>
-      <div class="col">
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-      </div>
-      <div class="col">
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-      </div>
-      <div class="col">
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
-        <div class="color"></div>
+      <div
+        class="col"
+        *ngFor="let c of r | times; let y = index;"
+        (click)="selectColorY(y)"
+      >
+        <div
+          class="color"
+          *ngFor="let r of 5| times; let x = index;"
+          (click)="selectColorX(x)"
+          [class.selected]="x === tempX && y === tempY && selectedOptions[tempY][tempX]"
+          [style.background-color]="visibleOptions[y*5+x]"
+        ></div>
       </div>
     </div>
   </div>
