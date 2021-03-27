@@ -88,13 +88,14 @@ export class GamePage implements OnInit {
     this.startTimer();
   }
 
-  ionViewDidLeave() {
+  async ionViewDidLeave() {
     this.getOptions();
     this.genQuestion();
     this.qno = '1';
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
     this.correctOrIncorrect = '';
     this.clearTimer();
+    await this.recordService.recordRevisitGame();
     clearInterval(this.timerRef);
   }
 
@@ -135,20 +136,22 @@ export class GamePage implements OnInit {
   }
 
   /**
-   *今何問目？の更新とゲーム終了
-   * @param
+   *今何問目？の更新
    */
   gotoNext() {
     this.recordService.recordRapTime(this.timer);
     this.qno = (parseInt(this.qno) + 1).toString();
-    if (this.qno === '11') {
-      this.qno = '1';
-      this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
-      this.correctOrIncorrect = '';
-      //this.clearTimer();
-      this.router.navigateByUrl('/result');
-    }
+    if (parseInt(this.qno) > 10) this.gameClear();
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
+  }
+
+  /**
+   * ゲーム終了
+   * @returns
+   */
+  gameClear(): void {
+    this.recordService.makeReview();
+    this.router.navigateByUrl('/result');
   }
 
   /**
@@ -200,7 +203,7 @@ export class GamePage implements OnInit {
       ',' +
       questionRGB[2] +
       ')';
-    console.log(pickedSource);
+    //console.log(pickedSource);
     this.recordService.recordQuestion(
       this.question,
       parseInt(this.qno),
@@ -220,7 +223,7 @@ export class GamePage implements OnInit {
 
     this.printJudge();
 
-    console.log(this.selectees, this.selectedOptions);
+    //console.log(this.selectees, this.selectedOptions);
   }
 
   /**
@@ -240,13 +243,13 @@ export class GamePage implements OnInit {
       this.selectedOptions[this.tempY][this.tempX] = false;
       this.selectees[0][0] = -1;
       this.selectees[0][1] = -1;
-      console.log(this.selectees);
+      //console.log(this.selectees);
     } else if (-1 < this.selectees[0][0]) {
       this.selectedOptions[this.tempY][this.tempX] = true;
       this.selectees[1][0] = this.tempX;
       this.selectees[1][1] = this.tempY;
 
-      console.log(this.selectees);
+      //console.log(this.selectees);
 
       //答え合わせメソッド=>サービスに移乗,メソッドの返り値から、正誤判定表示
       //hsl値の切り出し

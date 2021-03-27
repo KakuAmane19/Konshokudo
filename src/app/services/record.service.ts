@@ -7,8 +7,7 @@ import { Storage } from '@ionic/storage';
 })
 export class RecordService {
   //ラップタイム
-  //private recordedTime = [...Array(10)].fill('');
-  private recordedTime = [...Array(10)].fill('01:40.00'); //　デバッグ用
+  private recordedTime = [...Array(10)].fill('');
 
   //一回目正解
   private recordedCorrectByOnce = [...Array(10)].fill(true);
@@ -16,6 +15,7 @@ export class RecordService {
   //キーオブジェクト
   private keys = {
     RANKING: 'RANKING',
+    REVISIT_GAMES: 'REVISIT_GAMES',
   };
 
   //ランキング
@@ -28,24 +28,9 @@ export class RecordService {
 
   //振り返り用各問
   private reviews: Array<Object> = new Array<Object>();
-  /* {
-    question: '',
-    answer1: '',
-    answer2: '',
-    recordIncorrectByOnce: true,
-    rapTime: '',
-  });*/
 
   //復習問題
-  private revisitGames: Array<Object>;
-  /**[...Array(10)].fill({
-    question: '',
-    answer1: '',
-    answer2: '',
-    recordIncorrectByOnce: false,
-    challengeTimes: '-1',
-  });
-   */
+  //private revisitGames: Array<Object> = new Array<Object>();
 
   constructor(private storage: Storage) {}
 
@@ -69,6 +54,7 @@ export class RecordService {
    */
   provideTotalTime(): string {
     //this.recordedTime = [...Array(10)].fill('00:10.39'); //　デバッグ用
+    console.log(JSON.stringify(this.recordedTime));
     return this.recordedTime[this.recordedTime.length - 1];
   }
 
@@ -80,7 +66,8 @@ export class RecordService {
   reset() {
     this.recordedTime = [...Array(10)].fill('');
     this.recordedCorrectByOnce = [...Array(10)].fill(true);
-    console.log(this.recordedTime);
+    this.reviews = new Array<Object>();
+    console.log(JSON.stringify(this.reviews));
   }
 
   /**
@@ -114,14 +101,62 @@ export class RecordService {
       answer2: answerColor2,
     };
     this.reviews.push(gameReviews);
-    console.log(gameReviews, JSON.stringify(this.reviews), this.reviews);
+  }
+
+  /**
+   * 振り返りページ用の色データの完成
+   * @return nothing
+   */
+  makeReview(): void {
+    let temp = [...this.reviews.slice(0, 10)];
+    temp.map((value, index) => {
+      value['rapTime'] = [...this.recordedTime].splice(index, 1)[0];
+      value['revisit'] = [...this.recordedCorrectByOnce].splice(index, 1)[0];
+    });
+    this.reviews = [...temp];
+    console.log(JSON.stringify(this.reviews));
+  }
+  /**
+   * 振り返りページ用色データの配布
+   * @return nothing
+   */
+  provideReview(): Array<Object> {
+    return this.reviews;
   }
 
   /**
    * サーバーに復習問題を保存
-   * @param n:number 問題番号
    * @return nothing
    */
+  async recordRevisitGame(): Promise<void> {
+    //ストレージから今の復習問題を引っ張り出す
+    let revisitGames = await this.provideRevisitGames();
+
+    //今回の追加問題を選別
+    let additionalGames = [...this.reviews].filter(
+      (v) => v.hasOwnProperty('revisit') && !v['revisit']
+    );
+    additionalGames.map((v) => {
+      delete v['rapTime'];
+      delete v['qno'];
+      v['challengeTimes'] = '0';
+    });
+
+    //合成
+    let newRevGames = [...additionalGames, ...revisitGames];
+    //console.log({ revisitGames }, { additionalGames });
+    //再保存
+    await this.storage.set(this.keys.REVISIT_GAMES, newRevGames);
+  }
+
+  /**
+   * 復習問題を提供
+   * @returns
+   */
+
+  provideRevisitGames(): Promise<Array<Object>> {
+    return this.storage.get(this.keys.REVISIT_GAMES);
+  }
 
   /**
    * ランクイン判定
