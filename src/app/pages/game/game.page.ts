@@ -207,8 +207,8 @@ export class GamePage implements OnInit {
     this.recordService.recordQuestion(
       this.question,
       parseInt(this.qno),
-      'rgb(' + rgb1[0] + ',' + rgb1[1] + ',' + rgb1[2] + ')',
-      'rgb(' + rgb2[0] + ',' + rgb2[1] + ',' + rgb2[2] + ')'
+      source1,
+      source2
     );
   }
 

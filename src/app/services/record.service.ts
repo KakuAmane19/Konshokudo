@@ -131,16 +131,21 @@ export class RecordService {
   async recordRevisitGame(): Promise<void> {
     //ストレージから今の復習問題を引っ張り出す
     let revisitGames = await this.provideRevisitGames();
+    if (revisitGames === null) revisitGames = Array<Object>();
 
     //今回の追加問題を選別
     let additionalGames = [...this.reviews].filter(
       (v) => v.hasOwnProperty('revisit') && !v['revisit']
     );
-    additionalGames.map((v) => {
-      delete v['rapTime'];
-      delete v['qno'];
-      v['challengeTimes'] = '0';
-    });
+    if (additionalGames.length === 0) {
+      additionalGames = Array<Object>();
+    } else {
+      additionalGames.map((v) => {
+        delete v['rapTime'];
+        delete v['qno'];
+        v['challengeTimes'] = '0';
+      });
+    }
 
     //合成
     let newRevGames = [...additionalGames, ...revisitGames];
@@ -165,6 +170,7 @@ export class RecordService {
    */
   async rankin(): Promise<boolean> {
     this.rankings = await this.provideRanking();
+    if (this.rankings === null) return true;
     if (
       this.rankings[this.rankings.length - 1].timeInCSec >=
       this.convertTimeStr2Int(this.recordedTime[9])
@@ -180,6 +186,14 @@ export class RecordService {
    */
   async saveRanking(text) {
     this.rankings = await this.provideRanking();
+    console.log(JSON.stringify(this.rankings));
+    if (this.rankings === null)
+      this.rankings = [...Array(20)].fill({
+        rank: '',
+        name: '',
+        time: '',
+        timeInCSec: Infinity,
+      });
 
     this.rankings.push({
       rank: '',
@@ -202,7 +216,6 @@ export class RecordService {
     this.rankings
       .filter((v) => v.timeInCSec < Infinity)
       .map((v, i) => (v.rank = i + 1));
-    console.log(this.rankings);
 
     await this.storage.set(this.keys.RANKING, this.rankings.slice(0, 20));
   }
@@ -222,8 +235,8 @@ export class RecordService {
    * @return timeInCSec:int 時間を整数で表現したもの[1/100秒]
    */
   private convertTimeStr2Int(time: string) {
-    //console.log(time);
-    if (time === '') return Infinity;
+    console.log(time);
+    if (time === '' || time === null) return Infinity;
     let timeSections1 = time.split(/\:|\./g);
     let timeArray = timeSections1.map((v) => parseInt(v, 10));
     let timeInCSec = timeArray[0] * 6000 + timeArray[1] * 100 + timeArray[2];

@@ -33,7 +33,7 @@ export class AllColorsService {
     return linear3.concat(this.achromaticHSL);
   };
 
-  private revisitGameData: Object;
+  private revisitGameData: Object = null;
 
   constructor() {}
 
@@ -52,14 +52,98 @@ export class AllColorsService {
 
     //revisit問題であれば、先頭ｎ個以内にランダム交換
     if (revisit !== undefined) {
-      //答え1のインデックスを確保
-      //答え2のインデックスを確保
-      //もし答え1のインデックスまたは答え2のインデックスが先頭25以上のとき
-      //答え1と先頭25個のうち1つ交換
-      //答え2と残りの先頭24個のうち一つを交換
+      if (this.revisitGameData === null) return buffer.slice(0, 25);
+
+      /*
+      let buffer = [...buffer].map((hslStr) => {
+        let hsl = hslStr.split(/hsl\(|,|\%,|\%\)/g).slice(1, 4);
+        let rgb = this.HSVtoRGB(hsl[0], hsl[1], hsl[2]);
+        return 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+      });
+*/
+      let indexColor1 = buffer.indexOf(this.revisitGameData['answer1']);
+      let indexColor2 = buffer.indexOf(this.revisitGameData['answer2']);
+
+      if (indexColor1 > 25 || indexColor2 > 25) {
+        let i = Math.floor(Math.random() * 25);
+        buffer[i] = [buffer[indexColor1], (buffer[indexColor1] = buffer[i])][0];
+
+        let j = Math.floor(Math.random() * 25);
+        while (j === i) i = Math.floor(Math.random() * 25);
+        buffer[j] = [buffer[indexColor2], (buffer[indexColor2] = buffer[j])][0];
+        console.log({ indexColor1, indexColor2, i, j });
+      }
     }
 
     return buffer.slice(0, 25);
+  }
+
+  /**
+   * HSV配列 を RGB配列 へ変換します
+   *
+   * @param   {Number}  h         hue値        ※ 0〜360の数値
+   * @param   {Number}  s         saturation値 ※ 0〜255 の数値
+   * @param   {Number}  v         value値      ※ 0〜255 の数値
+   * @return  {Object}  {r, g, b} ※ r/g/b は 0〜255 の数値
+   */
+  HSVtoRGB(h, s, v) {
+    let r, g, b; // 0..255
+
+    while (h < 0) {
+      h += 360;
+    }
+
+    h = h % 360;
+
+    // 特別な場合 saturation = 0
+    if (s == 0) {
+      // → RGB は V に等しい
+      v = Math.round(v);
+      return [v, v, v];
+    }
+
+    s = s / 255;
+
+    let i = Math.floor(h / 60) % 6,
+      f = h / 60 - i,
+      p = v * (1 - s),
+      q = v * (1 - f * s),
+      t = v * (1 - (1 - f) * s);
+
+    switch (i) {
+      case 0:
+        r = v;
+        g = t;
+        b = p;
+        break;
+      case 1:
+        r = q;
+        g = v;
+        b = p;
+        break;
+      case 2:
+        r = p;
+        g = v;
+        b = t;
+        break;
+      case 3:
+        r = p;
+        g = q;
+        b = v;
+        break;
+      case 4:
+        r = t;
+        g = p;
+        b = v;
+        break;
+      case 5:
+        r = v;
+        g = p;
+        b = q;
+        break;
+    }
+
+    return [Math.round(r), Math.round(g), Math.round(b)];
   }
 
   /**

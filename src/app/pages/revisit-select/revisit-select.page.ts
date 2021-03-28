@@ -26,6 +26,7 @@ export class RevisitSelectPage implements OnInit {
 
   gotoRevisitGame(revisitGame: Object) {
     this.allColorsService.reserveTheGameData(revisitGame);
+    console.log(revisitGame);
     this.router.navigateByUrl('/revisit-game');
   }
 

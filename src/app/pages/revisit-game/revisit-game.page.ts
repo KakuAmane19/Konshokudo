@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-//import { timer } from 'rxjs';
+import { timer } from 'rxjs';
 
-//const time$ = timer(3000);
+const time$ = timer(3000);
 
 import {
   trigger,
@@ -68,12 +68,6 @@ export class RevisitGamePage implements OnInit {
   //回答カラーオブジェクト
   public answer = '';
 
-  //タイマー
-  public timer = '00:00.00';
-  counter: number;
-  timerRef;
-  running: boolean = false;
-
   //今何問目？
   //public qno = '10';
   public r = Math.round(10 / 2 + 0.4);
@@ -107,8 +101,10 @@ export class RevisitGamePage implements OnInit {
    * @returns
    */
   gameClear(): void {
-    this.recordService.makeReview();
-    this.router.navigateByUrl('/result');
+    this.gameData['challengeTimes'];
+    time$.subscribe(() => {
+      this.router.navigateByUrl('/revisit-select');
+    });
   }
 
   /**
@@ -201,13 +197,13 @@ export class RevisitGamePage implements OnInit {
       if (judge === true) {
         this.sf_color = 'red';
         this.correctOrIncorrect = '正解！';
-        this.answer = '';
-        this.getOptions();
-        this.genQuestion();
+        this.gameClear();
+        //this.answer = '';
+        //this.getOptions();
+        //this.genQuestion();
       } else {
         this.sf_color = 'blue';
         this.correctOrIncorrect = '不正解……';
-        //this.recordService.recordIncorrectByOnce(parseInt(this.qno));
         this.answer = '';
       }
     } else {
