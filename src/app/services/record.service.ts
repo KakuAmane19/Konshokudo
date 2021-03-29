@@ -29,9 +29,6 @@ export class RecordService {
   //振り返り用各問
   private reviews: Array<Object> = new Array<Object>();
 
-  //復習問題
-  //private revisitGames: Array<Object> = new Array<Object>();
-
   constructor(private storage: Storage) {}
 
   /**
@@ -75,7 +72,7 @@ export class RecordService {
    * @param n:number 問題番号
    * @return nothing
    */
-  recordIncorrectByOnce(n: number) {
+  recordIncorrectByOnce(n: number): void {
     this.recordedCorrectByOnce[n - 1] = false;
     console.log(this.recordedCorrectByOnce, n);
   }
@@ -161,6 +158,26 @@ export class RecordService {
 
   provideRevisitGames(): Promise<Array<Object>> {
     return this.storage.get(this.keys.REVISIT_GAMES);
+  }
+
+  /**
+   * 復習問題から削除
+   * @returns
+   */
+
+  async removeRevisitGames(gameData: Object): Promise<void> {
+    console.log({ gameData });
+    let buff: Array<Object> = await this.provideRevisitGames();
+    let newRevGames = gameData['revisit']
+      ? buff.filter(
+          (v) =>
+            v['question'] !== gameData['question'] &&
+            v['answer1'] !== gameData['answer1'] &&
+            v['answer2'] !== gameData['answer2']
+        )
+      : buff;
+    console.log({ buff, newRevGames });
+    await this.storage.set(this.keys.REVISIT_GAMES, newRevGames);
   }
 
   /**

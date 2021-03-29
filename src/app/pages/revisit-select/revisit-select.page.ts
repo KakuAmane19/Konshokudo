@@ -20,8 +20,8 @@ export class RevisitSelectPage implements OnInit {
     private allColorsService: AllColorsService
   ) {}
 
-  ngOnInit() {
-    this.printRevisitGames();
+  async ngOnInit() {
+    await this.printRevisitGames();
   }
 
   gotoRevisitGame(revisitGame: Object) {

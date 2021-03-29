@@ -41,13 +41,9 @@ import { RecordService } from '../../services/record.service';
   ],
 })
 export class RevisitGamePage implements OnInit {
-  //復習ゲーム
-  //しばらく回答を見せる時間を作る。
-  //一問正解したらセレクトに戻る
-  //復習問題から消す
-
   //復習問題データ
   public gameData: Object;
+  private correctByOnce = true;
 
   //選択肢カラーオブジェクト5*5
   public selectedOptions = Array(5)
@@ -68,8 +64,7 @@ export class RevisitGamePage implements OnInit {
   //回答カラーオブジェクト
   public answer = '';
 
-  //今何問目？
-  //public qno = '10';
+  //選択肢行数コントロール
   public r = Math.round(10 / 2 + 0.4);
 
   //正解不正解
@@ -91,17 +86,21 @@ export class RevisitGamePage implements OnInit {
     this.genQuestion();
   }
 
-  async ionViewDidLeave() {
+  ionViewDidLeave() {
     this.correctOrIncorrect = '';
-    //await this.recordService.recordRevisitGame();
+    this.correctByOnce = true;
   }
 
   /**
    * ゲーム終了
    * @returns
    */
-  gameClear(): void {
-    this.gameData['challengeTimes'];
+  async gameClear(): Promise<void> {
+    this.gameData['challengeTimes'] = (
+      parseInt(this.gameData['challengeTimes']) + 1
+    ).toString();
+    this.gameData['revisit'] = this.correctByOnce;
+    await this.recordService.removeRevisitGames(this.gameData);
     time$.subscribe(() => {
       this.router.navigateByUrl('/revisit-select');
     });
@@ -151,7 +150,7 @@ export class RevisitGamePage implements OnInit {
   /*******************************
    * 選択された色を検知し、正誤判定サービスに渡す、及び正誤判定を表示するメソッド
    */
-  printJudge(): void {
+  async printJudge(): Promise<void> {
     if (this.selectedOptions[this.tempY][this.tempX]) {
       this.selectedOptions[this.tempY][this.tempX] = false;
       this.selectees[0][0] = -1;
@@ -197,14 +196,12 @@ export class RevisitGamePage implements OnInit {
       if (judge === true) {
         this.sf_color = 'red';
         this.correctOrIncorrect = '正解！';
-        this.gameClear();
-        //this.answer = '';
-        //this.getOptions();
-        //this.genQuestion();
+        await this.gameClear();
       } else {
         this.sf_color = 'blue';
         this.correctOrIncorrect = '不正解……';
         this.answer = '';
+        this.correctByOnce = false;
       }
     } else {
       this.selectedOptions[this.tempY][this.tempX] = true;
