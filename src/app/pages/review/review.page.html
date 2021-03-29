@@ -6,86 +6,15 @@
 
 <ion-content>
   <div class="review-window">
-    <div class="question">
-      <div class="qnumber">1</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-
-    <div class="question">
-      <div class="qnumber">2</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">3</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">4</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">5</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">6</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">7</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">8</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">9</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
-    </div>
-    <div class="question">
-      <div class="qnumber">10</div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="color"></div>
-      <div class="laptime">00:00:00</div>
-      <div class="revisit">要復習<ion-checkbox></ion-checkbox></div>
+    <div class="question" *ngFor="let quest of review;">
+      <div class="qnumber">{{quest['qno']}}</div>
+      <div class="color" [style.background-color]="quest['question']"></div>
+      <div class="color" [style.background-color]="quest['answer1']"></div>
+      <div class="color" [style.background-color]="quest['answer2']"></div>
+      <div class="laptime">{{quest['rapTime']}}</div>
+      <div class="revisit">
+        要復習<ion-checkbox value="!quest['revisit']"></ion-checkbox>
+      </div>
     </div>
   </div>
 </ion-content>

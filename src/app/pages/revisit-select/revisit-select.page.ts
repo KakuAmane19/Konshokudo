@@ -14,14 +14,20 @@ export class RevisitSelectPage implements OnInit {
   public revisitGames: Array<Object> = [
     { question: '', answer1: '', answer2: '', challengeTimes: '-1' },
   ];
+
+  public badge: string = '';
+
   constructor(
     private router: Router,
     private recordService: RecordService,
     private allColorsService: AllColorsService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {}
+
+  async ionViewWillEnter() {
     await this.printRevisitGames();
+    this.printBadge();
   }
 
   gotoRevisitGame(revisitGame: Object) {
@@ -31,7 +37,9 @@ export class RevisitSelectPage implements OnInit {
   }
 
   //復習ゲームの数をバッヂに描画
-  //復習ゲームのデータ構造とカッズはサービスから受け取る
+  printBadge() {
+    this.badge = this.revisitGames.length.toString();
+  }
 
   /**復習ゲーム一覧を描画
    *

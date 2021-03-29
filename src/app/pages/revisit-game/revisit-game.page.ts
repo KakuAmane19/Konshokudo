@@ -96,9 +96,6 @@ export class RevisitGamePage implements OnInit {
    * @returns
    */
   async gameClear(): Promise<void> {
-    this.gameData['challengeTimes'] = (
-      parseInt(this.gameData['challengeTimes']) + 1
-    ).toString();
     this.gameData['revisit'] = this.correctByOnce;
     await this.recordService.removeRevisitGames(this.gameData);
     time$.subscribe(() => {

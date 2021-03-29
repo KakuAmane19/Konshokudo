@@ -168,6 +168,19 @@ export class RecordService {
   async removeRevisitGames(gameData: Object): Promise<void> {
     console.log({ gameData });
     let buff: Array<Object> = await this.provideRevisitGames();
+
+    buff.map((v) => {
+      if (
+        v['question'] === gameData['question'] &&
+        v['answer1'] === gameData['answer1'] &&
+        v['answer2'] === gameData['answer2']
+      )
+        v['challengeTimes'] = (
+          parseInt(gameData['challengeTimes']) + 1
+        ).toString();
+      return v;
+    });
+
     let newRevGames = gameData['revisit']
       ? buff.filter(
           (v) =>
@@ -176,6 +189,7 @@ export class RecordService {
             v['answer2'] !== gameData['answer2']
         )
       : buff;
+
     console.log({ buff, newRevGames });
     await this.storage.set(this.keys.REVISIT_GAMES, newRevGames);
   }
