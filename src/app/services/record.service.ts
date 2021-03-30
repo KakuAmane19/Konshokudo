@@ -29,6 +29,9 @@ export class RecordService {
   //振り返り用各問
   private reviews: Array<Object> = new Array<Object>();
 
+  //復習問題データ
+  private revisitGames: Array<Object> = new Array<Object>();
+
   constructor(private storage: Storage) {}
 
   /**
@@ -97,7 +100,8 @@ export class RecordService {
       answer1: answerColor1,
       answer2: answerColor2,
     };
-    this.reviews.push(gameReviews);
+    this.reviews.push({ ...gameReviews });
+    this.revisitGames.push({ ...gameReviews });
   }
 
   /**
@@ -105,19 +109,31 @@ export class RecordService {
    * @return nothing
    */
   makeReview(): void {
-    let temp = [...this.reviews.slice(0, 10)];
+    let temp = this.reviews.slice(0, 10);
     temp.map((value, index) => {
       value['rapTime'] = [...this.recordedTime].splice(index, 1)[0];
       value['revisit'] = [...this.recordedCorrectByOnce].splice(index, 1)[0];
     });
-    this.reviews = [...temp];
-    console.log(JSON.stringify(this.reviews));
+    this.reviews = temp;
+
+    this.revisitGames.map((value, index) => {
+      value['rapTime'] = [...this.recordedTime].splice(index, 1)[0];
+      value['revisit'] = [...this.recordedCorrectByOnce].splice(index, 1)[0];
+    });
+    console.log(
+      JSON.stringify(this.reviews),
+      JSON.stringify(this.revisitGames)
+    );
   }
   /**
    * 振り返りページ用色データの配布
    * @return nothing
    */
   provideReview(): Array<Object> {
+    console.log(
+      JSON.stringify(this.reviews),
+      JSON.stringify(this.revisitGames)
+    );
     return this.reviews;
   }
 
@@ -131,7 +147,7 @@ export class RecordService {
     if (revisitGames === null) revisitGames = Array<Object>();
 
     //今回の追加問題を選別
-    let additionalGames = [...this.reviews].filter(
+    let additionalGames = this.revisitGames.filter(
       (v) => v.hasOwnProperty('revisit') && !v['revisit']
     );
     if (additionalGames.length === 0) {
@@ -147,6 +163,10 @@ export class RecordService {
     //合成
     let newRevGames = [...additionalGames, ...revisitGames];
     //console.log({ revisitGames }, { additionalGames });
+    console.log(
+      JSON.stringify(this.reviews),
+      JSON.stringify(this.revisitGames)
+    );
     //再保存
     await this.storage.set(this.keys.REVISIT_GAMES, newRevGames);
   }

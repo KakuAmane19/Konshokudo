@@ -9,19 +9,18 @@ import { RecordService } from '../../services/record.service';
 })
 export class ReviewPage implements OnInit {
   public review: Array<Object> = [...Array(10)].fill({
-    qno: '',
-    question: '',
-    answer1: '',
-    answer2: '',
-    rapTime: '',
-    review: '',
+    qno: '-1',
+    question: 'rgb(100,200,50)',
+    answer1: 'hsl(60,50%,50%)',
+    answer2: 'hsl(270,90%,90%)',
+    rapTime: '00:10:20',
+    revisit: false,
   });
 
   constructor(private recordService: RecordService) {}
 
-  ngOnInit() {
-    //今回のラップタイムと要復習、問題と回答を受け取る
+  ngOnInit() {}
+  ionViewWillEnter() {
     this.review = this.recordService.provideReview();
-    //描画
   }
 }

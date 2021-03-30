@@ -30,6 +30,10 @@ export class ResultPage implements OnInit {
     }
   }
 
+  async ionViewWillEnter() {
+    this.rankings = await this.recordService.provideRanking();
+  }
+
   ionViewDidLeave() {
     this.recordService.reset();
   }

@@ -13,7 +13,7 @@
       <div class="color" [style.background-color]="quest['answer2']"></div>
       <div class="laptime">{{quest['rapTime']}}</div>
       <div class="revisit">
-        要復習<ion-checkbox value="!quest['revisit']"></ion-checkbox>
+        要復習<ion-checkbox [checked]="!quest['revisit']"></ion-checkbox>
       </div>
     </div>
   </div>

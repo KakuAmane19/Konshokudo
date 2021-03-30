@@ -94,7 +94,9 @@ export class GamePage implements OnInit {
     this.qno = '1';
     this.r = Math.round(parseInt(this.qno) / 2 + 0.4);
     this.correctOrIncorrect = '';
+
     this.clearTimer();
+    await this.recordService.makeReview();
     await this.recordService.recordRevisitGame();
     clearInterval(this.timerRef);
   }
@@ -150,7 +152,6 @@ export class GamePage implements OnInit {
    * @returns
    */
   gameClear(): void {
-    this.recordService.makeReview();
     this.router.navigateByUrl('/result');
   }
 
